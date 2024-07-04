@@ -1,0 +1,23 @@
+# must be docker, cannot use with podman
+# Step to use:
+# 1. generate public key from vagrant ssh key: ssh-keygen -y -f ~/.vagrant.d/insecure_private_keys/vagrant.key.rsa > vagrant.key.pub
+# 2. docker build . -t ubuntu-onxp
+# 3. vagrant up --provider=docker --debug
+
+# https://developer.hashicorp.com/vagrant/docs/providers/docker/commands
+# Run command: vagrant docker-exec -it -- apt update
+
+Vagrant.configure("2") do |config|
+
+  # https://developer.hashicorp.com/vagrant/docs/providers/docker/configuration
+  config.vm.provider "docker" do |d|
+    d.image = "ubuntu-onxp"
+    d.has_ssh = true
+    d.name = "ubuntu-onxp"
+    # keep it running
+    d.remains_running = true
+  end
+
+  config.vm.network "forwarded_port", guest: 22, host: 2222, id: "ssh"
+  config.ssh.insert_key = false
+end

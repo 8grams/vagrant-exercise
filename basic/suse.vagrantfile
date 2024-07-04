@@ -1,0 +1,6 @@
+# VAGRANT_VAGRANTFILE=suse.vagrantfile vagrant up
+Vagrant.configure("2") do |config|
+    config.vm.box = "opensuse/Leap-15.3.x86_64"
+    config.vm.network "private_network", type: "dhcp"
+    config.ssh.insert_key = false
+end

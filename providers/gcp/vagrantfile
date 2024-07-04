@@ -1,0 +1,19 @@
+# refers to: https://github.com/onxpnet/packer-exercise/blob/main/packer/gcp/ubuntu.pkr.hcl
+# docs: https://github.com/mitchellh/vagrant-google
+# install plugin: vagrant plugin install vagrant-google
+# Run: vagrant up --provider=google
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "google/gce"
+
+  config.vm.provider :google do |google, override|
+    google.google_project_id = "mashanz-software-engineering"
+    google.image_family = 'onxp-ubuntu-jammy'
+    google.disk_size = 25
+
+    override.ssh.username = "glendmaatita_me"
+
+    # must add ./../../keys/id_rsa.pub first to Compute Engine > Metadata > SSH Keys
+    override.ssh.private_key_path = "./../../keys/id_rsa"
+  end
+end
