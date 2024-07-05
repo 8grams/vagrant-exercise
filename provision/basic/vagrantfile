@@ -1,0 +1,18 @@
+$script = <<-SCRIPT
+echo Hello OnXP...
+date > /etc/vagrant_shell_provisioned
+SCRIPT
+
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.network "private_network", type: "dhcp"
+  config.ssh.insert_key = false # do not generate new key pair
+
+  config.vm.provision "shell",
+    # using inline shell
+    # inline: "echo Hello, OnXP!"
+    # using script
+    inline: $script
+    # using remote file
+    # path: "https://onxp.net/provisioner.sh"
+end

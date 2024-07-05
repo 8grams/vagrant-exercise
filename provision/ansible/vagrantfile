@@ -1,0 +1,11 @@
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.network "private_network", type: "dhcp"
+  config.ssh.insert_key = false # do not generate new key pair
+
+  # https://developer.hashicorp.com/vagrant/docs/provisioning/ansible
+  # Need ansible installed in Host OS
+  config.vm.provision "ansible" do |ansible|
+    ansible.playbook = "./playbook.yaml"
+  end
+end

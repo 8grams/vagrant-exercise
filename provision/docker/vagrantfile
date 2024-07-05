@@ -1,0 +1,19 @@
+# vagrant up
+# curl -v http://localhost:8080
+Vagrant.configure("2") do |config|
+  config.vm.box = "ubuntu/jammy64"
+  config.vm.network "private_network", type: "dhcp"
+  config.ssh.insert_key = false # do not generate new key pair
+
+  # https://developer.hashicorp.com/vagrant/docs/provisioning/docker
+  # in Guest OS, vagrant will install docker, pull nginx image, and run it
+  config.vm.provision "docker" do |d|
+    d.run "nginx",
+
+    # pass cmd or argument here
+    # cmd: "bash -l",
+    args: "-p 80:80"
+  end
+
+  config.vm.network "forwarded_port", guest: 80, host: 8080, id: "web"
+end
