@@ -1,0 +1,39 @@
+---
+# reference: https://docs.openstack.org/kolla-ansible/2024.1/user/quickstart.html
+- name: Prepare VM to use Kolla Ansible
+  hosts: all
+  become: yes
+  vars:
+    venv_path: /home/vagrant/app
+  tasks:
+    - name: Install various packages with dnf
+      ansible.builtin.dnf:
+        name:
+          - git
+          - python3-devel
+          - libffi-devel
+          - gcc
+          - openssl-devel
+          - python3-libselinux
+        state: present
+    - name: Create a Python virtual environment
+      ansible.builtin.command:
+        cmd: "python3 -m venv {{ venv_path }}"
+    - name: Activate the Python virtual environment
+      ansible.builtin.command:
+        cmd: "{{ venv_path }}/bin/activate"
+    - name: Ensure pip installed
+      ansible.builtin.command:
+        cmd: pip install -U pip
+    - name: Install Ansible
+      ansible.builtin.command:
+        cmd: pip install 'ansible-core>=2.15,<2.16.99'
+    - name: Install Kolla Ansible
+      ansible.builtin.command:
+        cmd: pip install git+https://opendev.org/openstack/kolla-ansible@stable/2024.1
+    
+    
+    
+
+    
+

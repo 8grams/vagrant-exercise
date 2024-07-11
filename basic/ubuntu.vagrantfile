@@ -1,4 +1,4 @@
-# to run: VAGRANT_VAGRANTFILE=ubuntu.vagrantfile vagrant up vagrant up
+# to run: VAGRANT_VAGRANTFILE=ubuntu.vagrantfile vagrant up
 # Vagrant will create ssh key pair on ~/.vagrant.d/insecure_private_keys/vagrant.key.rsa
 # ssh to vagrant: vagrant ssh
 # manual ssh ssh -i ~/.vagrant.d/insecure_private_keys/vagrant.key.rsa vagrant@localhost -p 2222
