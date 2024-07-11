@@ -19,20 +19,47 @@
     - name: Create a Python virtual environment
       ansible.builtin.command:
         cmd: "python3 -m venv {{ venv_path }}"
+    - name: Create the /etc/kolla directory
+      ansible.builtin.file:
+        path: "{{ venv_path }}/bin/activate"
+        state: file
+        mode: '0777'
     - name: Activate the Python virtual environment
       ansible.builtin.command:
-        cmd: "{{ venv_path }}/bin/activate"
+        cmd: "source {{ venv_path }}/bin/activate"
     - name: Ensure pip installed
       ansible.builtin.command:
         cmd: pip install -U pip
+        chdir: "{{ venv_path }}"
     - name: Install Ansible
       ansible.builtin.command:
         cmd: pip install 'ansible-core>=2.15,<2.16.99'
+        chdir: "{{ venv_path }}"
     - name: Install Kolla Ansible
       ansible.builtin.command:
-        cmd: pip install git+https://opendev.org/openstack/kolla-ansible@stable/2024.1
+        cmd: pip install git+https://opendev.org/openstack/kolla-ansible@stable/2024.1    
+        chdir: "{{ venv_path }}"
+    - name: Create the /etc/kolla directory
+      ansible.builtin.file:
+        path: /etc/kolla
+        state: directory
+        owner: "{{ ansible_env.USER }}"
+        group: "{{ ansible_env.USER }}"
+        mode: '0755'
+    - name: Copy Kolla configs
+      ansible.builtin.command:
+        cmd: "cp -r {{ venv_path }}/share/kolla-ansible/etc_examples/kolla/* /etc/kolla"
+    - name: Copy Kolla Inventory
+      ansible.builtin.command:
+        cmd: "cp -r {{ venv_path }}/share/kolla-ansible/ansible/inventory/all-in-one ."
+        chdir: "{{ venv_path }}"
+    - name: Install Ansible deps
+      ansible.builtin.command:
+        cmd: "kolla-ansible install-deps"
+        chdir: "{{ venv_path }}"
     
-    
+
+        
     
 
     
