@@ -1,8 +1,6 @@
 ---
 # reference: https://docs.openstack.org/kolla-ansible/2024.1/user/quickstart.html
 - name: Prepare VM to use Kolla Ansible
-  hosts: all
-  become: yes
   vars:
     venv_path: /home/vagrant/app
   tasks:
@@ -24,38 +22,35 @@
         path: "{{ venv_path }}/bin/activate"
         state: file
         mode: '0777'
-    - name: Activate the Python virtual environment
-      ansible.builtin.command:
-        cmd: "source {{ venv_path }}/bin/activate"
-    - name: Ensure pip installed
-      ansible.builtin.command:
-        cmd: pip install -U pip
-        chdir: "{{ venv_path }}"
     - name: Install Ansible
-      ansible.builtin.command:
-        cmd: pip install 'ansible-core>=2.15,<2.16.99'
+      ansible.builtin.pip:
+        name: 'ansible-core>=2.15,<2.16.99'
         chdir: "{{ venv_path }}"
+        virtualenv: "{{ venv_path }}"
     - name: Install Kolla Ansible
-      ansible.builtin.command:
-        cmd: pip install git+https://opendev.org/openstack/kolla-ansible@stable/2024.1    
+      ansible.builtin.pip:
+        name: git+https://opendev.org/openstack/kolla-ansible@stable/2024.1    
         chdir: "{{ venv_path }}"
+        virtualenv: "{{ venv_path }}"
     - name: Create the /etc/kolla directory
       ansible.builtin.file:
         path: /etc/kolla
         state: directory
         owner: "{{ ansible_env.USER }}"
         group: "{{ ansible_env.USER }}"
-        mode: '0755'
+        mode: '0777'
     - name: Copy Kolla configs
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: "cp -r {{ venv_path }}/share/kolla-ansible/etc_examples/kolla/* /etc/kolla"
     - name: Copy Kolla Inventory
-      ansible.builtin.command:
+      ansible.builtin.shell:
         cmd: "cp -r {{ venv_path }}/share/kolla-ansible/ansible/inventory/all-in-one ."
         chdir: "{{ venv_path }}"
     - name: Install Ansible deps
-      ansible.builtin.command:
-        cmd: "kolla-ansible install-deps"
+      ansible.builtin.shell: |
+        source {{ venv_path }}/bin/activate
+        kolla-ansible install-deps
+      args:
         chdir: "{{ venv_path }}"
     
 
