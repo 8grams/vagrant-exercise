@@ -1,6 +1,7 @@
 ---
 # reference: https://docs.openstack.org/kolla-ansible/2024.1/user/quickstart.html
 - name: Prepare VM to use Kolla Ansible
+  hosts: all
   vars:
     venv_path: /home/vagrant/app
   tasks:
