@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder "./app", "/home/vagrant/app"
 
   # prepare VM to ready to use Kolla Ansibe
-  config.vm.provision "ansible_local" do |ansible|
+  config.vm.provision "ansible" do |ansible|
     ansible.playbook = "./kolla-playbook.yaml"
   end
 end
